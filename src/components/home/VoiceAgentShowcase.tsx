@@ -9,7 +9,7 @@ const VoiceAgentShowcase = () => {
           <h2 className="section-title">
             Experience Our AI Voice Agent
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed whitespace-nowrap">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
             Ask Astra about our services, pricing, and how we can transform your business with AI solutions.
           </p>
         </div>
