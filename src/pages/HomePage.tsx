@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEOHead from '../components/seo/SEOHead';
 import Hero from '../components/home/Hero';
+import VoiceAgentShowcase from '../components/home/VoiceAgentShowcase';
 import ClientsMarquee from '../components/home/ClientsMarquee';
 import Features from '../components/home/Features';
 import HowItWorks from '../components/home/HowItWorks';
@@ -141,6 +142,7 @@ const HomePage = () => {
       />
       <Hero />
       <ClientsMarquee />
+      <VoiceAgentShowcase />
       <Features />
       <HowItWorks />
       <About />

@@ -30,7 +30,7 @@ function AppContent() {
   return (
     <div className={`min-h-screen transition-all duration-500 text-slate-900 ${
       isHolidaySeason
-        ? 'bg-gradient-to-b from-red-50 to-red-100'
+        ? 'bg-white'
         : 'bg-gradient-to-b from-slate-50 to-slate-100'
     }`}>
       {isHolidaySeason && <FallingSnow />}
