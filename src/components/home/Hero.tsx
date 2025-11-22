@@ -45,11 +45,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className={`relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden transition-all duration-500 ${
-      isHolidaySeason
-        ? 'bg-gradient-to-b from-red-50 to-red-100'
-        : 'bg-gradient-to-b from-slate-50 to-slate-100'
-    }`}>
+    <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100">
       <div className="absolute inset-0 top-24 h-[calc(100%-6rem)]">
         <Particles
           id="tsparticles"
@@ -84,10 +80,10 @@ const Hero = () => {
             },
             particles: {
               color: {
-                value: isHolidaySeason ? "#dc2626" : "#3178ff",
+                value: "#3178ff",
               },
               links: {
-                color: isHolidaySeason ? "#dc2626" : "#3178ff",
+                color: "#3178ff",
                 distance: 150,
                 enable: true,
                 opacity: 0.3,
@@ -137,11 +133,7 @@ const Hero = () => {
             )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 mb-4 sm:mb-6">
               Transform Customer Interactions with{' '}
-              <span className={`bg-clip-text text-transparent bg-gradient-to-r ${
-                isHolidaySeason
-                  ? 'from-red-600 via-red-500 to-red-400'
-                  : 'from-blue-600 via-blue-500 to-blue-400'
-              }`}>
+              <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 bg-clip-text text-transparent">
                 Enterprise AI Solutions
               </span>
             </h1>
@@ -174,11 +166,9 @@ const Hero = () => {
                   height="600"
                   onLoad={() => setImageLoaded(true)}
                 />
-                {/* Colored background decoration centered behind image */}
+                {/* Blue background decoration centered behind image */}
                 <div
-                  className={`absolute inset-0 rounded-lg transition-colors duration-500 ${
-                    isHolidaySeason ? 'bg-red-200' : 'bg-blue-200'
-                  }`}
+                  className="absolute inset-0 bg-blue-200 rounded-lg"
                   style={{
                     transform: 'rotate(3deg) translate(0px, 16px)',
                     zIndex: -1
