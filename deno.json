@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.39.7",
+    "nodemailer": "npm:nodemailer@6.9.12"
+  },
+  "tasks": {
+    "start": "deno run --allow-all --watch=static/,routes/ dev.ts"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

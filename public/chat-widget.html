@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Chat Assistant</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <script>
+        window.ChatWidgetConfig = {
+            webhook: {
+                url: 'https://n8n.phaetonai.ca/webhook/57de9426-b592-48ff-8c8d-a54583409650/chat',
+                route: 'general'
+            },
+            branding: {
+                logo: 'https://phaetonai.ca/clients/phaetonai/images/Phaeton-Logo-White.png',
+                name: 'PHAETONAI',
+                welcomeText: "Get instant answers to your questions!\n\nOur AI assistant's ready to help you with information about our services, solutions, and more.",
+                responseTimeText: "Click the button above to start chatting. We're here to help!"
+            },
+            style: {
+                primaryColor: '#3b82f6',
+                secondaryColor: '#2563eb',
+                position: 'right',
+                backgroundColor: '#ffffff',
+                fontColor: '#1f2937'
+            },
+            suggestedQuestions: [
+                "What AI services does Phaeton AI offer?",
+                "Can your AI assistants integrate with CRM systems?",
+                "What industries do you specialize in?",
+                "How does your AI workflow automation work?",
+                "Do you offer AI solutions for healthcare companies?",
+                "How can AI chatbots help with customer support?",
+                "What languages do your AI solutions support?",
+                "How do your AI voice assistants handle customer calls?",
+                "What kind of analytics and reporting do you provide?",
+                "Can you help automate our HR processes?",
+                "How does your AI scheduling solution work?",
+                "What makes your AI different from other providers?",
+                "Do you offer social media automation services?",
+                "How quickly can AI chatbots be deployed?",
+                "What security measures do you have for healthcare data?",
+                "Can your AI handle multiple conversations simultaneously?",
+                "How do you ensure HIPAA compliance?",
+                "What kind of businesses benefit most from AI automation?",
+                "Do you provide training for using your AI solutions?",
+                "How does your AI learn and improve over time?",
+                "What support options are available after implementation?",
+                "What's included in your AI chatbot solutions?",
+                "How do AI voice callers help with lead generation?",
+                "Can your AI integrate with existing business systems?",
+                "What are the benefits of AI workflow automation?"
+            ]
+        };
+    </script>
+
+    <script>
+// Standalone Chat Widget - Auto Open
+(function() {
+    // Load resources
+    const loadResources = () => {
+        const fontElement = document.createElement('link');
+        fontElement.rel = 'stylesheet';
+        fontElement.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap';
+        document.head.appendChild(fontElement);
+        
+        // Load Tally embed script
+        const tallyScript = document.createElement('script');
+        tallyScript.src = 'https://tally.so/widgets/embed.js';
+        tallyScript.onload = () => {
+            if (typeof Tally !== 'undefined') {
+                Tally.loadEmbeds();
+            }
+        };
+        document.head.appendChild(tallyScript);
+    };
+
+    // Default configuration
+    const defaultSettings = {
+        webhook: { url: '', route: '' },
+        branding: {
+            logo: 'https://phaetonai.ca/clients/phaetonai/images/Phaeton-Logo-White.png',
+            name: 'PHAETONAI',
+            welcomeText: "Get instant answers to your questions!\n\nOur AI assistant's ready to help you with information about our services and solutions.",
+            responseTimeText: 'Click the button above to start chatting'
+        },
+        style: {
+            primaryColor: '#3b82f6',
+            secondaryColor: '#2563eb',
+            position: 'right',
+            backgroundColor: '#ffffff',
+            fontColor: '#1f2937'
+        },
+        suggestedQuestions: []
+    };
+
+    // Merge configurations
+    const settings = window.ChatWidgetConfig ? {
+        webhook: { ...defaultSettings.webhook, ...(window.ChatWidgetConfig?.webhook || {}) },
+        branding: { ...defaultSettings.branding, ...(window.ChatWidgetConfig?.branding || {}) },
+        style: { ...defaultSettings.style, ...(window.ChatWidgetConfig?.style || {}) },
+        suggestedQuestions: window.ChatWidgetConfig?.suggestedQuestions || defaultSettings.suggestedQuestions
+    } : defaultSettings;
+
+    // Add contact information to the end of the chat
+    const addContactInfo = (elements) => {
+        const contactInfoHTML = `
+            <div class="contact-info-container">
+                <div class="contact-info-header">
+                    <h3>Contact Information</h3>
+                </div>
+                <div class="contact-info-content">
+                    <p>The main contact email for Phaeton AI is <a href="mailto:contactus@phaetonai.com" class="chat-link">contactus@phaetonai.com</a></p>
+                    <p>For technical support, you can reach out to <a href="mailto:support@phaetonai.com" class="chat-link">support@phaetonai.com</a></p>
+                    <p>You can also reach us by phone at <a href="tel:+18888957770" class="chat-link">1-888-895-7770</a></p>
+                </div>
+            </div>
+        `;
+        
+        const contactDiv = document.createElement('div');
+        contactDiv.innerHTML = contactInfoHTML;
+        elements.messagesContainer.appendChild(contactDiv);
+        ui.scrollToBottom(elements.messagesContainer);
+    };
+
+    // Add email information only
+    const addEmailInfo = (elements) => {
+        const emailInfoHTML = `
+            <div class="contact-info-container">
+                <div class="contact-info-header">
+                    <h3>Email Addresses</h3>
+                </div>
+                <div class="contact-info-content">
+                    <p>The main contact email for Phaeton AI is <a href="mailto:contactus@phaetonai.com" class="chat-link">contactus@phaetonai.com</a></p>
+                    <p>For technical support, you can reach out to <a href="mailto:support@phaetonai.com" class="chat-link">support@phaetonai.com</a></p>
+                </div>
+            </div>
+        `;
+        
+        const contactDiv = document.createElement('div');
+        contactDiv.innerHTML = contactInfoHTML;
+        elements.messagesContainer.appendChild(contactDiv);
+        ui.scrollToBottom(elements.messagesContainer);
+    };
+
+    // Add phone information only
+    const addPhoneInfo = (elements) => {
+        const phoneInfoHTML = `
+            <div class="contact-info-container">
+                <div class="contact-info-header">
+                    <h3>Phone Number</h3>
+                </div>
+                <div class="contact-info-content">
+                    <p>You can reach us at <a href="tel:+18888957770" class="chat-link">1-888-895-7770</a></p>
+                </div>
+            </div>
+        `;
+        
+        const contactDiv = document.createElement('div');
+        contactDiv.innerHTML = phoneInfoHTML;
+        elements.messagesContainer.appendChild(contactDiv);
+        ui.scrollToBottom(elements.messagesContainer);
+    };
+
+    // State management
+    const chatState = {
+        isOpen: true, // Auto open
+        isWaiting: false,
+        conversationId: '',
+        userData: null,
+        messageHistory: [],
+        awaitingConnectionResponse: false
+    };
+
+    // Utility functions
+    const utils = {
+        decodeHtmlEntities: (html) => {
+            if (typeof html !== 'string') return html;
+            
+            let decoded = html;
+            
+            // First pass - Replace all possible ampersand encodings FIRST
+            decoded = decoded
+                .replace(/&amp;amp;/g, '&')
+                .replace(/&amp;/g, '&')
+                .replace(/&#38;/g, '&')
+                .replace(/&#x26;/g, '&');
+            
+            // Second pass - handle apostrophes and quotes
+            decoded = decoded
+                .replace(/&#39;/g, "'")
+                .replace(/&#x27;/g, "'")
+                .replace(/&#8217;/g, "'")
+                .replace(/&#8216;/g, "'")
+                .replace(/&apos;/g, "'")
+                .replace(/&#34;/g, '"')
+                .replace(/&#x22;/g, '"')
+                .replace(/&#8220;/g, '"')
+                .replace(/&#8221;/g, '"')
+                .replace(/&quot;/g, '"');
+            
+            // Third pass - other common entities
+            decoded = decoded
+                .replace(/&#60;/g, '<')
+                .replace(/&lt;/g, '<')
+                .replace(/&#62;/g, '>')
+                .replace(/&gt;/g, '>')
+                .replace(/&#47;/g, '/')
+                .replace(/&#x2F;/g, '/')
+                .replace(/&#96;/g, '`')
+                .replace(/&#x60;/g, '`')
+                .replace(/&#61;/g, '=')
+                .replace(/&#x3D;/g, '=')
+                .replace(/&#160;/g, ' ')
+                .replace(/&#xa0;/g, ' ')
+                .replace(/&nbsp;/g, ' ');
+            
+            // Fourth pass - use DOM method as final cleanup
+            try {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = decoded;
+                decoded = tempDiv.textContent || tempDiv.innerText || decoded;
+            } catch (e) {
+                console.warn('DOM entity decoding failed:', e);
+            }
+            
+            // Final pass - catch any remaining ampersands
+            decoded = decoded.replace(/&amp;/g, '&');
+            
+            return decoded;
+        },
+
+        // Make URLs clickable without breaking existing HTML
+        makeLinksClickable: (text) => {
+            if (typeof text !== 'string') return text;
+            
+            // Don't process text that has ANY HTML fragments or class attributes
+            if (text.includes('<a href') || text.includes('</a>') || 
+                text.includes('class="') || text.includes('">') || 
+                text.includes('</') || text.includes('"/>')) {
+                return text;
+            }
+            
+            // First handle email addresses (only if text is completely clean)
+            const emailRegex = /\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/g;
+            text = text.replace(emailRegex, (email) => {
+                return `<a href="mailto:${email}" class="chat-link">${email}</a>`;
+            });
+            
+            // Then handle web URLs
+            const urlRegex = /(https?:\/\/[^\s<>"'\[\]{}|\\^`]+[^\s<>"'\[\]{}|\\^`.,;:])|(\b[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s<>"'\[\]{}|\\^`]*[^\s<>"'\[\]{}|\\^`.,;:])?(?![a-zA-Z0-9._%+-]*@))/gi;
+            
+            text = text.replace(urlRegex, (match, httpsUrl, domainUrl) => {
+                // Skip if this is already inside an email link
+                if (match.includes('mailto:')) {
+                    return match;
+                }
+                
+                let url = match;
+                let displayUrl = match;
+                
+                // If it's a domain without protocol, add https://
+                if (domainUrl && !httpsUrl) {
+                    url = 'https://' + domainUrl;
+                    displayUrl = domainUrl;
+                }
+                
+                // Clean up any trailing punctuation
+                url = url.replace(/[.,;:!?]+$/, '');
+                displayUrl = displayUrl.replace(/[.,;:!?]+$/, '');
+                
+                return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="chat-link">${displayUrl}</a>`;
+            });
+            
+            return text;
+        },
+
+        // Process markdown and make links clickable
+        processMarkdown: (text) => {
+            // Clean up asterisks and make links clickable
+            let cleanText = text.replace(/\*/g, ''); // Remove all asterisks
+            return utils.makeLinksClickable(cleanText);
+        },
+
+        // Clean up malformed email HTML patterns from webhook responses
+        cleanMalformedEmailHtml: (text) => {
+            if (typeof text !== 'string') return text;
+            
+            // Fix pattern: domain.com" class="chat-link">email@domain.com
+            text = text.replace(/([a-zA-Z0-9.-]+\.com)"\s*class="[^"]*">([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, 
+                (match, domain, email) => {
+                    return `<a href="mailto:${email}" class="chat-link">${email}</a>`;
+                });
+            
+            // Fix pattern: "Send your inquiry to domain.com" class="chat-link">email@domain.com"
+            text = text.replace(/(at\s+|to\s+)([a-zA-Z0-9.-]+\.com)"\s*class="[^"]*">([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+                (match, prefix, domain, email) => {
+                    return `${prefix}<a href="mailto:${email}" class="chat-link">${email}</a>`;
+                });
+            
+            // Fix standalone malformed email patterns
+            text = text.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"\s*class="[^"]*"/g, 
+                (match, email) => {
+                    return `<a href="mailto:${email}" class="chat-link">${email}</a>`;
+                });
+            
+            // Clean up any remaining malformed HTML fragments
+            text = text.replace(/([a-zA-Z0-9.-]+\.com)"\s*class="[^"]*">/g, '$1');
+            text = text.replace(/"\s*class="[^"]*">/g, '');
+            
+            return text;
+        },
+
+        // Simplified formatting - decode HTML entities, clean malformed emails, then make remaining links clickable
+        formatBotResponse: (text) => {
+            // AGGRESSIVE email cleanup to completely remove class attributes
+            
+            // Remove all variations of class="chat-link" that might appear
+            text = text.replace(/class="chat-link"?>/g, '');
+            text = text.replace(/class="chat-link"/g, '');
+            text = text.replace(/"\s*class="chat-link">/g, '');
+            text = text.replace(/"\s*class="chat-link"/g, '');
+            text = text.replace(/class="[^"]*chat-link[^"]*"/g, '');
+            
+            // Handle the specific malformed pattern from webhook
+            text = text.replace(/Email:\s*[^"]*"\s*class="[^"]*">([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, 
+                (match, email) => {
+                    return `Email: ${email}`;
+                });
+                
+            // Clean up any domain.com" class="..." pattern
+            text = text.replace(/([a-zA-Z0-9.-]+\.com)"\s*class="[^"]*">?/g, '');
+            
+            // Remove any remaining class attributes
+            text = text.replace(/"\s*class="[^"]*">/g, '');
+            text = text.replace(/class="[^"]*"/g, '');
+            text = text.replace(/"\s*>/g, '');
+            
+            // Clean up stray quotes before emails
+            text = text.replace(/"\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '$1');
+            
+            // Clean up malformed email HTML from webhook
+            text = utils.cleanMalformedEmailHtml(text);
+            
+            // Then decode HTML entities
+            text = utils.decodeHtmlEntities(text);
+            
+            // Final aggressive cleanup for any remaining HTML fragments
+            text = text.replace(/[a-zA-Z0-9.-]*\.com"\s*class="[^"]*">([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '$1');
+            text = text.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"\s*class="[^"]*"/g, '$1');
+            
+            // Remove any remaining HTML-like fragments
+            text = text.replace(/>\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '$1');
+            
+            // Finally make any remaining clean text clickable
+            text = utils.makeLinksClickable(text);
+            return text;
+        },
+
+        createSessionId: () => {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0,
+                    v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        },
+
+        isValidEmail: (email) => {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        },
+
+        fetchWithRetry: async (url, options, retries = 3) => {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    return utils.fetchWithRetry(url, options, retries - 1);
+                }
+                throw error;
+            }
+        },
+
+        // Check if user is asking for contact information
+        isContactRequest: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            const contactKeywords = [
+                'contact information',
+                'contact details',
+                'how can i contact',
+                'how do i contact',
+                'contact you',
+                'get in touch',
+                'reach out'
+            ];
+            
+            return contactKeywords.some(keyword => lowerMessage.includes(keyword));
+        },
+
+        // Check if user is asking specifically for email
+        isEmailRequest: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            console.log('Checking email request for:', lowerMessage); // Debug log
+            const emailKeywords = [
+                'email',
+                'email address',
+                'your email',
+                'support email',
+                'contact email',
+                'whats the email',
+                'what is the email',
+                'email address'
+            ];
+            
+            const isMatch = emailKeywords.some(keyword => lowerMessage.includes(keyword));
+            console.log('Email request match:', isMatch); // Debug log
+            return isMatch;
+        },
+
+        // Check if user is asking specifically for phone number
+        isPhoneRequest: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            
+            // Exclude business service terms that contain "call" but aren't phone requests
+            const excludePatterns = [
+                /inbound.*call/,
+                /outbound.*call/,
+                /voice.*call/,
+                /call.*service/,
+                /call.*solution/,
+                /call.*automation/,
+                /call.*handling/,
+                /call.*management/,
+                /ai.*call/,
+                /automated.*call/,
+                /call.*center/,
+                /call.*quality/,
+                /call.*routing/,
+                /call.*tracking/,
+                /call.*analytics/,
+                /call.*monitoring/,
+                /callers/,
+                /calling.*service/,
+                /calling.*solution/,
+                /voice.*assistant.*call/,
+                /how.*call.*work/,
+                /what.*call.*do/,
+                /call.*feature/,
+                /call.*capability/
+            ];
+            
+            // If message matches business service patterns, don't treat as phone request
+            for (const pattern of excludePatterns) {
+                if (pattern.test(lowerMessage)) {
+                    return false;
+                }
+            }
+            
+            // More specific phone request keywords
+            const phoneKeywords = [
+                'phone number',
+                'telephone number',
+                'contact phone',
+                'phone to call',
+                'number to call',
+                'call you',
+                'reach you by phone',
+                'your phone',
+                'company phone',
+                'office phone',
+                'support phone',
+                'what\'s your phone',
+                'whats your phone',
+                'how do i call you',
+                'how can i call you',
+                'phone contact'
+            ];
+            
+            return phoneKeywords.some(keyword => lowerMessage.includes(keyword));
+        },
+
+        // NEW: Check if user is asking for pricing information
+        isPricingRequest: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            const pricingKeywords = [
+                'price',
+                'pricing',
+                'cost',
+                'costs',
+                'how much',
+                'what does it cost',
+                'what do you charge',
+                'how much do you charge',
+                'what are your rates',
+                'rates',
+                'fee',
+                'fees',
+                'quote',
+                'quotation',
+                'estimate',
+                'budget',
+                'expense',
+                'what would it cost',
+                'pricing information',
+                'cost information',
+                'price list',
+                'pricing details',
+                'what\'s the price',
+                'whats the price',
+                'price range',
+                'cost range',
+                'how much would',
+                'what\'s the cost',
+                'whats the cost',
+                'pricing structure',
+                'cost structure',
+                'payment',
+                'subscription',
+                'plan pricing',
+                'service cost',
+                'monthly cost',
+                'yearly cost',
+                'annual cost'
+            ];
+            
+            return pricingKeywords.some(keyword => lowerMessage.includes(keyword));
+        },
+
+        // NEW: Replace any pricing information in webhook response and fix email formatting
+        replacePricingInResponse: (text) => {
+            if (typeof text !== 'string') return text;
+            
+            // Patterns that indicate pricing content in responses
+            const pricingPatterns = [
+                /\$\d+/g, // Dollar amounts like $399, $49.99
+                /\d+\/month/g, // Monthly pricing like 399/month
+                /\d+\/a month/g, // Monthly pricing like 399/a month
+                /price[:\s]*\$?\d+/gi, // "Price: $399" or "price 399"
+                /cost[:\s]*\$?\d+/gi, // "Cost: $399" or "cost 399"
+                /fee[:\s]*\$?\d+/gi, // "Fee: $100"
+                /\d+[\s]*cents?/gi, // "18 cents" or "0.18¢"
+                /\d+\.?\d*¢/g, // "0.18¢"
+                /basic plan[:\s]*\$?\d+/gi,
+                /standard plan[:\s]*\$?\d+/gi,
+                /premium plan[:\s]*\$?\d+/gi,
+                /one-time[:\s]*\$?\d+/gi,
+                /setup fee[:\s]*\$?\d+/gi,
+                /set up fee[:\s]*\$?\d+/gi
+            ];
+            
+            // Check if response contains pricing information
+            const containsPricing = pricingPatterns.some(pattern => pattern.test(text));
+            
+            if (containsPricing) {
+                console.log('Pricing detected in response, replacing with contact info');
+                return "For pricing information, please contact Phaeton AI directly by email or phone:\n\nPhone: 1-888-895-7770\nEmail: contactus@phaetonai.com\n\nOur team will provide you with detailed pricing based on your specific needs.";
+            }
+            
+            return text;
+        },
+
+        // FIXED: Improved email HTML cleaning to prevent malformed display
+        cleanMalformedEmailHtml: (text) => {
+            if (typeof text !== 'string') return text;
+            
+            // AGGRESSIVE cleanup of all class attributes first
+            text = text.replace(/class="[^"]*"/g, '');
+            text = text.replace(/"\s*class="[^"]*"/g, '');
+            text = text.replace(/class="[^"]*">/g, '');
+            text = text.replace(/"\s*class="[^"]*">/g, '');
+            
+            // Fix pattern: domain.com" class="chat-link">email@domain.com
+            text = text.replace(/([a-zA-Z0-9.-]+\.com)"\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, 
+                (match, domain, email) => {
+                    return email; // Just return the clean email
+                });
+            
+            // Fix pattern: "Send your inquiry to domain.com" email@domain.com"
+            text = text.replace(/(at\s+|to\s+)([a-zA-Z0-9.-]+\.com)"\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
+                (match, prefix, domain, email) => {
+                    return `${prefix}${email}`;
+                });
+            
+            // Fix standalone malformed email patterns
+            text = text.replace(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})"\s*/g, 
+                (match, email) => {
+                    return email; // Just return the clean email
+                });
+            
+            // Clean up any remaining malformed HTML fragments
+            text = text.replace(/([a-zA-Z0-9.-]+\.com)"\s*>/g, '');
+            text = text.replace(/"\s*>/g, '');
+            text = text.replace(/>\s*$/g, '');
+            
+            // Remove any stray HTML-like fragments
+            text = text.replace(/[a-zA-Z0-9.-]*\.com"[^a-zA-Z0-9]*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '$1');
+            
+            return text;
+        },
+
+        // FIXED: Ultra-conservative human request detection - only for explicit agent requests
+        isHumanRequest: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            
+            // If message is a question (ends with ? or starts with question words), never auto-trigger
+            if (lowerMessage.endsWith('?') || 
+                lowerMessage.startsWith('how ') || 
+                lowerMessage.startsWith('what ') || 
+                lowerMessage.startsWith('when ') || 
+                lowerMessage.startsWith('where ') || 
+                lowerMessage.startsWith('why ') || 
+                lowerMessage.startsWith('who ') || 
+                lowerMessage.startsWith('which ') || 
+                lowerMessage.startsWith('can ') || 
+                lowerMessage.startsWith('could ') || 
+                lowerMessage.startsWith('would ') || 
+                lowerMessage.startsWith('should ') || 
+                lowerMessage.startsWith('do ') || 
+                lowerMessage.startsWith('does ') || 
+                lowerMessage.startsWith('did ') || 
+                lowerMessage.startsWith('will ') || 
+                lowerMessage.startsWith('is ') || 
+                lowerMessage.startsWith('are ')) {
+                return false; // Never auto-trigger for questions
+            }
+            
+            // Comprehensive exclude patterns for informational requests
+            const excludePatterns = [
+                /^\w+@\w+\./, // Starts with email
+                /^https?:/, // Starts with URL
+                /what.*cost/, // Cost questions
+                /how much/, // Pricing questions
+                /price/, // Pricing
+                /pricing/, // Pricing
+                /tell me about/, // Information requests
+                /what is/, // Definition requests
+                /what are/, // Information requests
+                /what do you/, // Service questions
+                /what does/, // How-to questions
+                /how does/, // How-to questions
+                /how do you/, // Process questions
+                /how can/, // Capability questions
+                /explain/, // Explanation requests
+                /describe/, // Description requests
+                /can you help/, // General help (not human contact)
+                /do you offer/, // Service inquiry
+                /do you provide/, // Service inquiry
+                /do you have/, // Availability questions
+                /what services/, // Service listing
+                /what solutions/, // Solution inquiry
+                /what features/, // Feature questions
+                /what benefits/, // Benefit questions
+                /what industries/, // Industry questions
+                /how long/, // Timeline questions
+                /how quickly/, // Timeline questions
+                /when can/, // Timeline questions
+                /where are/, // Location questions
+                /who do you/, // General company questions
+                /why should/, // Comparison questions
+                /which plan/, // Plan comparison
+                /what plan/, // Plan questions
+                /compare/, // Comparison requests
+                /difference between/, // Comparison
+                /benefits of/, // Benefit inquiry
+                /advantages of/, // Advantage inquiry
+                /features of/, // Feature inquiry
+                /capabilities of/, // Capability inquiry
+                /types of/, // Type inquiry
+                /kinds of/, // Type inquiry
+                /options for/, // Option inquiry
+                /solutions for/, // Solution inquiry
+                /support.*after/, // Support after purchase questions
+                /support.*get/, // Support questions
+                /much.*support/, // Support level questions
+            ];
+            
+            // Check if message should be excluded
+            for (const pattern of excludePatterns) {
+                if (pattern.test(lowerMessage)) {
+                    return false; // Always exclude informational requests
+                }
+            }
+            
+            // ONLY these ultra-specific phrases will trigger Tally form
+            const humanRequestKeywords = [
+                // Explicit agent contact requests
+                'i want to speak with an agent',
+                'i need to speak with an agent',
+                'i would like to speak with an agent',
+                'can i speak with an agent',
+                'may i speak with an agent',
+                'i want to talk to an agent',
+                'i need to talk to an agent',
+                'i would like to talk to an agent',
+                'can i talk to an agent',
+                'may i talk to an agent',
+                
+                // Explicit support contact requests
+                'i want to speak with support',
+                'i need to speak with support',
+                'i would like to speak with support',
+                'can i speak with support',
+                'may i speak with support',
+                'i want to talk to support',
+                'i need to talk to support',
+                'i would like to talk to support',
+                'can i talk to support',
+                'may i talk to support',
+                
+                // Explicit human contact requests
+                'i want to speak with someone',
+                'i need to speak with someone',
+                'i would like to speak with someone',
+                'can i speak with someone',
+                'may i speak with someone',
+                'i want to talk to someone',
+                'i need to talk to someone',
+                'i would like to talk to someone',
+                'can i talk to someone',
+                'may i talk to someone',
+                
+                // Explicit customer service requests
+                'i want to speak with customer service',
+                'i need to speak with customer service',
+                'i would like to speak with customer service',
+                'can i speak with customer service',
+                'may i speak with customer service',
+                'i want to talk to customer service',
+                'i need to talk to customer service',
+                'i would like to talk to customer service',
+                'can i talk to customer service',
+                'may i talk to customer service',
+                
+                // Direct connection requests
+                'connect me with an agent',
+                'connect me to an agent',
+                'connect me with support',
+                'connect me to support',
+                'connect me with someone',
+                'connect me to someone',
+                'transfer me to an agent',
+                'transfer me to support',
+                'put me through to an agent',
+                'put me through to support',
+                
+                // Ready to proceed with service (very specific)
+                'i am ready to get started',
+                'we are ready to get started',
+                'i am ready to move forward',
+                'we are ready to move forward',
+                'i want to proceed with your services',
+                'we want to proceed with your services',
+                'i would like to start working with you',
+                'we would like to start working with you',
+                
+                // Sales team contact (when ready to buy)
+                'connect me with sales',
+                'connect me to sales',
+                'i want to speak with sales',
+                'i need to speak with sales',
+                'i want to talk to sales',
+                'i need to talk to sales'
+            ];
+            
+            // Check for exact matches only
+            for (const keyword of humanRequestKeywords) {
+                if (lowerMessage.includes(keyword)) {
+                    console.log('Human request detected with keyword:', keyword);
+                    return true;
+                }
+            }
+            
+            return false;
+        },
+
+        // NEW: Check if user might want to connect but asked a question
+        mightWantToConnect: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            
+            // Only for questions that mention support, agent, contact, etc.
+            const connectKeywords = [
+                'support',
+                'help',
+                'agent',
+                'customer service',
+                'contact',
+                'assistance',
+                'representative'
+            ];
+            
+            const isQuestion = lowerMessage.endsWith('?') || 
+                lowerMessage.startsWith('how ') || 
+                lowerMessage.startsWith('what ') || 
+                lowerMessage.startsWith('when ') || 
+                lowerMessage.startsWith('where ') || 
+                lowerMessage.startsWith('can ') || 
+                lowerMessage.startsWith('do ') || 
+                lowerMessage.startsWith('does ') || 
+                lowerMessage.startsWith('will ');
+            
+            if (isQuestion) {
+                return connectKeywords.some(keyword => lowerMessage.includes(keyword));
+            }
+            
+            return false;
+        },
+
+        // NEW: Check if user responded yes to connection offer
+        isConnectionConfirmation: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            const yesResponses = [
+                'yes',
+                'yeah',
+                'yep',
+                'sure',
+                'ok',
+                'okay',
+                'alright',
+                'sounds good',
+                'that would be great',
+                'please',
+                'i would like that',
+                'i would like to',
+                'i want to',
+                'connect me',
+                'yes please'
+            ];
+            
+            return yesResponses.some(response => 
+                lowerMessage === response || 
+                lowerMessage.startsWith(response + ' ') ||
+                lowerMessage.endsWith(' ' + response)
+            );
+        },
+
+        // NEW: Check if user responded no to connection offer
+        isConnectionDecline: (message) => {
+            const lowerMessage = message.toLowerCase().trim();
+            const noResponses = [
+                'no',
+                'nope',
+                'no thanks',
+                'no thank you',
+                'not now',
+                'not right now',
+                'maybe later',
+                'i\'m good',
+                'im good',
+                'that\'s okay',
+                'thats okay',
+                'no need'
+            ];
+            
+            return noResponses.some(response => 
+                lowerMessage === response || 
+                lowerMessage.startsWith(response + ' ') ||
+                lowerMessage.endsWith(' ' + response)
+            );
+        },
+
+        // Check if the webhook response contains email information that should be filtered out
+        containsEmailInfo: (text) => {
+            if (typeof text !== 'string') return false;
+            
+            const lowerText = text.toLowerCase();
+            return lowerText.includes('@phaetonai.com') ||
+                   lowerText.includes('contactus@') ||
+                   lowerText.includes('support@') ||
+                   lowerText.includes('email:') ||
+                   lowerText.includes('reach out to') ||
+                   lowerText.includes('phone: call') ||
+                   lowerText.includes('(888) 895-7770') ||
+                   lowerText.includes('class="chat-link"');
+        },
+
+        // FIXED: More comprehensive team connection response detection
+        isConnectTeamResponse: (text) => {
+            if (typeof text !== 'string') return false;
+            
+            const lowerText = text.toLowerCase();
+            
+            // More comprehensive patterns for team connection responses
+            const teamConnectionPatterns = [
+                'connect directly with',
+                'connect with the team',
+                'connect with our team',
+                'thank you for your request',
+                'would you like help preparing',
+                'fill out.*form',
+                'contact form',
+                'get back to you',
+                'reach out to you',
+                'schedule.*call',
+                'book.*meeting',
+                'speak with.*team',
+                'our team.*contact',
+                'representative.*contact'
+            ];
+            
+            return teamConnectionPatterns.some(pattern => {
+                const regex = new RegExp(pattern, 'i');
+                return regex.test(lowerText);
+            }) || utils.containsEmailInfo(text);
+        }
+    };
+
+    // DOM elements
+    const createElements = () => {
+        const widgetRoot = document.createElement('div');
+        widgetRoot.className = 'chat-assist-widget';
+        widgetRoot.style.setProperty('--chat-widget-primary', settings.style.primaryColor);
+        widgetRoot.style.setProperty('--chat-widget-secondary', settings.style.secondaryColor);
+        widgetRoot.style.setProperty('--chat-widget-tertiary', settings.style.secondaryColor);
+        widgetRoot.style.setProperty('--chat-widget-surface', settings.style.backgroundColor);
+        widgetRoot.style.setProperty('--chat-widget-text', settings.style.fontColor);
+
+        const chatWindow = document.createElement('div');
+        chatWindow.className = 'chat-window visible'; // Auto visible
+
+        // Chat window HTML
+        chatWindow.innerHTML = `
+            <div class="chat-window-inner">
+                <div class="chat-header">
+                    <div class="chat-header-logo-container">
+                        <div style="position: relative;">
+                            <img class="chat-header-face" src="https://phaetonai.ca/clients/phaetonai/images/PhaetonAI-logo.jpg" alt="PhaetonAI Face">
+                            <div class="online-indicator"></div>
+                        </div>
+                        <img class="chat-header-logo" src="${settings.branding.logo}" alt="${utils.decodeHtmlEntities(settings.branding.name)}">
+                    </div>
+                    <button class="clear-chat-btn" aria-label="Clear chat">
+                        <img src="https://phaetonai.ca/clients/phaetonai/images/delete_chat_icon_white.png" alt="Clear chat" />
+                    </button>
+                </div>
+                <div class="chat-welcome">
+                    <h2 class="chat-welcome-title">${utils.decodeHtmlEntities(settings.branding.welcomeText)}</h2>
+                    <button class="chat-start-btn">
+                        Start chatting
+                    </button>
+                    <p class="chat-response-time">${utils.decodeHtmlEntities(settings.branding.responseTimeText)}</p>
+                </div>
+                <div class="user-registration">
+                    <h2 class="registration-title">Please enter your details to start chatting</h2>
+                    <form class="registration-form">
+                        <div class="form-field">
+                            <label class="form-label" for="chat-user-name">Name</label>
+                            <input type="text" id="chat-user-name" class="form-input" placeholder="Your name" required>
+                            <div class="error-text" id="name-error"></div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label" for="chat-user-email">Email</label>
+                            <input type="email" id="chat-user-email" class="form-input" placeholder="Your email address" required>
+                            <div class="error-text" id="email-error"></div>
+                        </div>
+                        <button type="submit" class="submit-registration">Continue to Chat</button>
+                    </form>
+                </div>
+                <div class="tally-form-container">
+                    <div class="tally-form-header">
+                        <h2 class="tally-form-title">Get Pricing Information</h2>
+                        <p class="tally-form-subtitle">Fill out this form and we'll get back to you with detailed pricing</p>
+                    </div>
+                    <div class="tally-form-content">
+                        <iframe data-tally-src="https://tally.so/embed/nPB6Zb?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+                                loading="lazy" 
+                                width="100%" 
+                                height="400" 
+                                frameborder="0" 
+                                marginheight="0" 
+                                marginwidth="0" 
+                                title="Contact form">
+                        </iframe>
+                    </div>
+                    <div class="tally-form-footer">
+                        <button class="return-to-chat-btn">Return to Chat</button>
+                    </div>
+                </div>
+                <div class="chat-body">
+                    <div class="chat-messages" role="log" aria-live="polite"></div>
+                    <div class="chat-controls">
+                        <textarea class="chat-textarea" placeholder="How can I assist?" rows="1" aria-label="Type your message"></textarea>
+                        <button class="chat-submit" aria-label="Send message">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 2L11 13"></path>
+                                <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="ai-disclaimer">
+                        AI-powered responses - please verify important information independently
+                    </div>
+                </div>
+            </div>
+        `;
+
+        widgetRoot.appendChild(chatWindow);
+        document.body.appendChild(widgetRoot);
+
+        return {
+            widgetRoot,
+            chatWindow,
+            startChatButton: chatWindow.querySelector('.chat-start-btn'),
+            chatBody: chatWindow.querySelector('.chat-body'),
+            messagesContainer: chatWindow.querySelector('.chat-messages'),
+            messageTextarea: chatWindow.querySelector('.chat-textarea'),
+            sendButton: chatWindow.querySelector('.chat-submit'),
+            registrationForm: chatWindow.querySelector('.registration-form'),
+            userRegistration: chatWindow.querySelector('.user-registration'),
+            chatWelcome: chatWindow.querySelector('.chat-welcome'),
+            nameInput: chatWindow.querySelector('#chat-user-name'),
+            emailInput: chatWindow.querySelector('#chat-user-email'),
+            nameError: chatWindow.querySelector('#name-error'),
+            emailError: chatWindow.querySelector('#email-error'),
+            chatWindowInner: chatWindow.querySelector('.chat-window-inner'),
+            tallyFormContainer: chatWindow.querySelector('.tally-form-container'),
+            returnToChatBtn: chatWindow.querySelector('.return-to-chat-btn'),
+            clearChatBtn: chatWindow.querySelector('.clear-chat-btn')
+        };
+    };
+
+    // UI functions
+    const ui = {
+        createTypingIndicator: () => {
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.setAttribute('aria-live', 'polite');
+            indicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            return indicator;
+        },
+
+        typeText: (element, text, messagesContainer, speed = 8) => {
+            return new Promise(resolve => {
+                // For HTML content, we need to handle it differently during typing
+                if (text.includes('<') && text.includes('>')) {
+                    // For HTML content, type the visible text but render HTML at the end
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = text;
+                    const visibleText = tempDiv.textContent || tempDiv.innerText || '';
+                    
+                    let i = 0;
+                    const type = () => {
+                        if (i < visibleText.length) {
+                            element.textContent = visibleText.substring(0, i + 1) + '|';
+                            i++;
+                            
+                            if (messagesContainer) {
+                                ui.scrollToBottom(messagesContainer);
+                            }
+                            setTimeout(type, speed);
+                        } else {
+                            // Remove cursor and set final HTML content
+                            element.innerHTML = text;
+                            if (messagesContainer) {
+                                ui.scrollToBottom(messagesContainer);
+                            }
+                            resolve();
+                        }
+                    };
+                    type();
+                } else {
+                    // For plain text, type normally
+                    let i = 0;
+                    const type = () => {
+                        if (i < text.length) {
+                            element.textContent = text.substring(0, i + 1) + '|';
+                            i++;
+                            
+                            if (messagesContainer) {
+                                ui.scrollToBottom(messagesContainer);
+                            }
+                            setTimeout(type, speed);
+                        } else {
+                            // Remove cursor and set final text
+                            element.textContent = text;
+                            if (messagesContainer) {
+                                ui.scrollToBottom(messagesContainer);
+                            }
+                            resolve();
+                        }
+                    };
+                    type();
+                }
+            });
+        },
+
+        scrollToBottom: (element) => {
+            element.scrollTop = element.scrollHeight;
+        },
+
+        showRegistrationForm: (elements) => {
+            elements.chatWelcome.style.display = 'none';
+            elements.userRegistration.classList.add('active');
+            elements.nameInput.focus();
+        },
+
+        showChatInterface: (elements) => {
+            elements.userRegistration.classList.remove('active');
+            elements.chatBody.classList.add('active');
+            elements.clearChatBtn.classList.add('visible');
+            elements.messageTextarea.focus();
+        },
+
+        showTallyForm: (elements, title = "Get Pricing Information", subtitle = "Fill out this form and we'll get back to you with detailed pricing") => {
+            // Update the title and subtitle for pricing or other uses
+            const titleElement = elements.tallyFormContainer.querySelector('.tally-form-title');
+            const subtitleElement = elements.tallyFormContainer.querySelector('.tally-form-subtitle');
+            
+            if (titleElement) titleElement.textContent = title;
+            if (subtitleElement) subtitleElement.textContent = subtitle;
+            
+            elements.chatBody.classList.remove('active');
+            elements.clearChatBtn.classList.remove('visible');
+            elements.tallyFormContainer.classList.add('active');
+            
+            // Ensure Tally embed loads properly
+            setTimeout(() => {
+                if (typeof Tally !== 'undefined') {
+                    Tally.loadEmbeds();
+                } else {
+                    // Fallback to manual iframe src setting
+                    const iframe = elements.tallyFormContainer.querySelector('iframe[data-tally-src]');
+                    if (iframe && !iframe.src) {
+                        iframe.src = iframe.dataset.tallySrc;
+                    }
+                }
+            }, 100);
+        },
+
+        hideTallyForm: (elements) => {
+            elements.tallyFormContainer.classList.remove('active');
+            elements.chatBody.classList.add('active');
+            elements.clearChatBtn.classList.add('visible');
+            elements.messageTextarea.focus();
+        },
+
+        // FIXED: Added the missing addInlineTallyForm function with customizable title and subtitle
+        addInlineTallyForm: (elements, title = "Connect with Our Team", subtitle = "Fill out this form and we'll get back to you shortly") => {
+            const inlineTallyHTML = `
+                <div class="inline-tally-container">
+                    <div class="inline-tally-header">
+                        <h3>${title}</h3>
+                        <p>${subtitle}</p>
+                    </div>
+                    <div class="inline-tally-content">
+                        <iframe data-tally-src="https://tally.so/embed/nPB6Zb?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+                                loading="lazy" 
+                                width="100%" 
+                                height="400" 
+                                frameborder="0" 
+                                marginheight="0" 
+                                marginwidth="0" 
+                                title="Contact form">
+                        </iframe>
+                    </div>
+                </div>
+            `;
+            
+            const tallyDiv = document.createElement('div');
+            tallyDiv.innerHTML = inlineTallyHTML;
+            elements.messagesContainer.appendChild(tallyDiv);
+            ui.scrollToBottom(elements.messagesContainer);
+            
+            // Load Tally embed
+            setTimeout(() => {
+                if (typeof Tally !== 'undefined') {
+                    Tally.loadEmbeds();
+                } else {
+                    const iframe = tallyDiv.querySelector('iframe[data-tally-src]');
+                    if (iframe && !iframe.src) {
+                        iframe.src = iframe.dataset.tallySrc;
+                    }
+                }
+            }, 100);
+        },
+
+        addMessage: (elements, message, type, shouldType = false) => {
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-bubble ${type}-bubble`;
+            
+            if (type === 'user') {
+                messageElement.textContent = message;
+                elements.messagesContainer.appendChild(messageElement);
+                ui.scrollToBottom(elements.messagesContainer);
+                return messageElement;
+            } else { 
+                // Use improved formatting function
+                const processedText = utils.processMarkdown(utils.formatBotResponse(message));
+                
+                if (shouldType) {
+                    // For typing effect, start with empty content
+                    messageElement.innerHTML = '';
+                    
+                    // Add message directly without avatar container
+                    elements.messagesContainer.appendChild(messageElement);
+                    ui.scrollToBottom(elements.messagesContainer);
+                    // Return element and processed text for typing
+                    return { element: messageElement, processedText: processedText };
+                } else {
+                    messageElement.innerHTML = processedText;
+                    
+                    // Add message directly without avatar container
+                    elements.messagesContainer.appendChild(messageElement);
+                    ui.scrollToBottom(elements.messagesContainer);
+                    return messageElement;
+                }
+            }
+        },
+
+        clearChat: (elements) => {
+            // Clear all messages from the chat
+            elements.messagesContainer.innerHTML = '';
+            
+            // Reset chat state
+            chatState.messageHistory = [];
+            chatState.awaitingConnectionResponse = false; // Reset connection state
+            
+            // Focus back to input
+            elements.messageTextarea.focus();
+        },
+
+        showError: (elements, message) => {
+            const errorElement = document.createElement('div');
+            errorElement.className = 'chat-bubble bot-bubble';
+            errorElement.textContent = utils.decodeHtmlEntities(message);
+            elements.messagesContainer.appendChild(errorElement);
+            ui.scrollToBottom(elements.messagesContainer);
+        }
+    };
+
+    // Chat operations
+    const chat = {
+        handleRegistration: async (event, elements) => {
+            event.preventDefault();
+            
+            elements.nameError.textContent = '';
+            elements.emailError.textContent = '';
+            elements.nameInput.classList.remove('error');
+            elements.emailInput.classList.remove('error');
+            
+            const name = elements.nameInput.value.trim();
+            const email = elements.emailInput.value.trim();
+            let isValid = true;
+            
+            if (!name) {
+                elements.nameError.textContent = 'Please enter your name';
+                elements.nameInput.classList.add('error');
+                isValid = false;
+            }
+            
+            if (!email) {
+                elements.emailError.textContent = 'Please enter your email';
+                elements.emailInput.classList.add('error');
+                isValid = false;
+            } else if (!utils.isValidEmail(email)) {
+                elements.emailError.textContent = 'Please enter a valid email address';
+                elements.emailInput.classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) return;
+            
+            const submitButton = elements.registrationForm.querySelector('.submit-registration');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Please wait...';
+            
+            try {
+                chatState.conversationId = utils.createSessionId();
+                chatState.userData = { name, email };
+                
+                ui.showChatInterface(elements);
+                
+                const typingIndicator = ui.createTypingIndicator();
+                elements.messagesContainer.appendChild(typingIndicator);
+                ui.scrollToBottom(elements.messagesContainer);
+                
+                const userInfoMessage = `Name: ${name}\nEmail: ${email}`;
+                const userInfoData = {
+                    action: "sendMessage",
+                    sessionId: chatState.conversationId,
+                    route: settings.webhook.route,
+                    chatInput: userInfoMessage,
+                    metadata: {
+                        userId: email,
+                        userName: name,
+                        isUserInfo: true
+                    }
+                };
+                
+                const response = await utils.fetchWithRetry(
+                    settings.webhook.url,
+                    {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwa3Nsdm15ZGZkZXZkZnRpZWNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5MDAyOTUsImV4cCI6MjA2MjQ3NjI5NX0.IfkIVsp3AtLOyXDW9hq9bEvnozd9IaaUay244iDhWGE'
+                        },
+                        body: JSON.stringify(userInfoData)
+                    }
+                );
+                
+                elements.messagesContainer.removeChild(typingIndicator);
+                
+                const webhookMessageText = Array.isArray(response) && response.length > 0 && response[0].output 
+                    ? response[0].output 
+                    : response.output;
+                
+                const defaultWelcome = `Hello ${name}! Welcome to ${utils.decodeHtmlEntities(settings.branding.name)}.
+
+Your go-to for intelligent AI chatbot solutions, AI voice assistants, and AI automation. I am Astra, if you need assistance, just ask!
+
+How can I assist you today?`;
+                const welcomeMessage = webhookMessageText || defaultWelcome;
+                
+                const messageResult = ui.addMessage(elements, welcomeMessage, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                if (settings.suggestedQuestions?.length > 0) {
+                    // Randomly select 3 questions from the available options
+                    const shuffledQuestions = [...settings.suggestedQuestions].sort(() => 0.5 - Math.random());
+                    const selectedQuestions = shuffledQuestions.slice(0, 3);
+                    
+                    const questionsContainer = document.createElement('div');
+                    questionsContainer.className = 'suggested-questions';
+                    
+                    selectedQuestions.forEach(question => {
+                        const button = document.createElement('button');
+                        button.className = 'suggested-question-btn';
+                        button.textContent = utils.decodeHtmlEntities(question);
+                        button.addEventListener('click', () => {
+                            chat.submitMessage(elements, question);
+                            questionsContainer.remove();
+                        });
+                        questionsContainer.appendChild(button);
+                    });
+                    
+                    elements.messagesContainer.appendChild(questionsContainer);
+                    ui.scrollToBottom(elements.messagesContainer);
+                }
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                elements.messagesContainer.querySelector('.typing-indicator')?.remove();
+                ui.showError(elements, "Sorry, we couldn't connect to the server. Please try again later.");
+                
+                submitButton.disabled = false;
+                submitButton.textContent = 'Continue to Chat';
+                elements.userRegistration.classList.add('active');
+                elements.chatBody.classList.remove('active');
+            }
+        },
+
+        submitMessage: async (elements, messageText) => {
+            if (chatState.isWaiting || !messageText.trim()) return;
+            
+            chatState.isWaiting = true;
+            elements.sendButton.disabled = true;
+            
+            ui.addMessage(elements, messageText, 'user');
+            
+            // NEW: Check if user is asking for pricing information - SHOW INLINE TALLY FORM
+            if (utils.isPricingRequest(messageText)) {
+                console.log('Pricing request detected:', messageText);
+                const pricingMessage = "I'd be happy to help you with pricing information! Please fill out the form below and we'll get back to you with detailed pricing based on your specific needs.";
+                
+                const messageResult = ui.addMessage(elements, pricingMessage, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                // Add inline Tally form for pricing inquiry
+                setTimeout(() => {
+                    ui.addInlineTallyForm(elements, "Get Pricing Information", "Fill out this form and we'll get back to you with detailed pricing");
+                }, 500);
+                
+                chatState.isWaiting = false;
+                elements.sendButton.disabled = false;
+                elements.messageTextarea.focus();
+                return;
+            }
+            
+            // Check if user is asking specifically for phone number
+            if (utils.isPhoneRequest(messageText)) {
+                console.log('Phone request detected:', messageText);
+                const phoneMessage = "Here's our phone number:";
+                const messageResult = ui.addMessage(elements, phoneMessage, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                // Add phone information
+                const phoneInfoHTML = `
+                    <div class="contact-info-container">
+                        <div class="contact-info-header">
+                            <h3>Phone Number</h3>
+                        </div>
+                        <div class="contact-info-content">
+                            <p>You can reach us at <a href="tel:+18888957770" class="chat-link">1-888-895-7770</a></p>
+                        </div>
+                    </div>
+                `;
+                
+                const contactDiv = document.createElement('div');
+                contactDiv.innerHTML = phoneInfoHTML;
+                elements.messagesContainer.appendChild(contactDiv);
+                ui.scrollToBottom(elements.messagesContainer);
+                
+                chatState.isWaiting = false;
+                elements.sendButton.disabled = false;
+                elements.messageTextarea.focus();
+                return;
+            }
+            
+            // Check if user is asking specifically for email
+            if (utils.isEmailRequest(messageText)) {
+                console.log('Email request detected:', messageText);
+                const emailMessage = "Here are our email addresses:";
+                const messageResult = ui.addMessage(elements, emailMessage, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                // Add email information
+                const emailInfoHTML = `
+                    <div class="contact-info-container">
+                        <div class="contact-info-header">
+                            <h3>Email Addresses</h3>
+                        </div>
+                        <div class="contact-info-content">
+                            <ul class="contact-info-list">
+                                <li><strong>General Contact:</strong> <a href="mailto:contactus@phaetonai.com" class="chat-link">contactus@phaetonai.com</a></li>
+                                <li><strong>Technical Support:</strong> <a href="mailto:support@phaetonai.com" class="chat-link">support@phaetonai.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                const contactDiv = document.createElement('div');
+                contactDiv.innerHTML = emailInfoHTML;
+                elements.messagesContainer.appendChild(contactDiv);
+                ui.scrollToBottom(elements.messagesContainer);
+                
+                chatState.isWaiting = false;
+                elements.sendButton.disabled = false;
+                elements.messageTextarea.focus();
+                return;
+            }
+            
+            // Check if user is asking for general contact information
+            if (utils.isContactRequest(messageText)) {
+                console.log('Contact request detected:', messageText);
+                const contactMessage = "Here's how you can reach us:";
+                const messageResult = ui.addMessage(elements, contactMessage, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                // Add full contact information
+                const contactInfoHTML = `
+                    <div class="contact-info-container">
+                        <div class="contact-info-header">
+                            <h3>Contact Information</h3>
+                        </div>
+                        <div class="contact-info-content">
+                            <ul class="contact-info-list">
+                                <li><strong>General Contact:</strong> <a href="mailto:contactus@phaetonai.com" class="chat-link">contactus@phaetonai.com</a></li>
+                                <li><strong>Technical Support:</strong> <a href="mailto:support@phaetonai.com" class="chat-link">support@phaetonai.com</a></li>
+                                <li><strong>Phone:</strong> <a href="tel:+18888957770" class="chat-link">1-888-895-7770</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                const contactDiv = document.createElement('div');
+                contactDiv.innerHTML = contactInfoHTML;
+                elements.messagesContainer.appendChild(contactDiv);
+                ui.scrollToBottom(elements.messagesContainer);
+                
+                chatState.isWaiting = false;
+                elements.sendButton.disabled = false;
+                elements.messageTextarea.focus();
+                return;
+            }
+            
+            // FIXED: Enhanced human request detection and handling
+            if (utils.isHumanRequest(messageText)) {
+                console.log('Human request detected:', messageText);
+                const humanRequestMessage = "I understand you'd like to speak with someone from our team. Let me connect you with our contact form where you can share your details and we'll get back to you shortly.";
+                
+                const messageResult = ui.addMessage(elements, humanRequestMessage, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                // Show Tally form directly after typing completes
+                setTimeout(() => {
+                    ui.showTallyForm(elements, "Connect with Our Team", "Fill out this form and we'll get back to you shortly");
+                }, 500);
+                
+                chatState.isWaiting = false;
+                elements.sendButton.disabled = false;
+                return;
+            }
+            
+            const typingIndicator = ui.createTypingIndicator();
+            elements.messagesContainer.appendChild(typingIndicator);
+            ui.scrollToBottom(elements.messagesContainer);
+            
+            try {
+                const requestData = {
+                    action: "sendMessage",
+                    sessionId: chatState.conversationId,
+                    route: settings.webhook.route,
+                    chatInput: messageText.trim(),
+                    metadata: {
+                        userId: chatState.userData?.email || "",
+                        userName: chatState.userData?.name || ""
+                    }
+                };
+                
+                const response = await utils.fetchWithRetry(
+                    settings.webhook.url,
+                    {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwa3Nsdm15ZGZkZXZkZnRpZWNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5MDAyOTUsImV4cCI6MjA2MjQ3NjI5NX0.IfkIVsp3AtLOyXDW9hq9bEvnozd9IaaUay244iDhWGE'
+                        },
+                        body: JSON.stringify(requestData)
+                    }
+                );
+                
+                typingIndicator.remove();
+                
+                const responseText = Array.isArray(response) && response.length > 0 && response[0].output
+                    ? response[0].output
+                    : response.output;
+                
+                const fallbackResponse = "I'm sorry, I didn't understand that. Could you please rephrase?";
+                const botResponse = responseText || fallbackResponse;
+                
+                // FIXED: Enhanced team connection response detection
+                if (utils.isConnectTeamResponse(botResponse)) {
+                    console.log('Connect team response detected, showing inline Tally form');
+                    const humanRequestMessage = "I understand you'd like to speak with someone from our team. Please fill out the form below and we'll get back to you shortly.";
+                    
+                    const messageResult = ui.addMessage(elements, humanRequestMessage, 'bot', true);
+                    await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                    
+                    // Add inline Tally form after typing completes
+                    setTimeout(() => {
+                        ui.addInlineTallyForm(elements, "Connect with Our Team", "Fill out this form and we'll get back to you shortly");
+                    }, 500);
+                    
+                    chatState.isWaiting = false;
+                    elements.sendButton.disabled = false;
+                    elements.messageTextarea.focus();
+                    return;
+                }
+                
+                // NEW: Replace any pricing information in the response
+                const finalBotResponse = utils.replacePricingInResponse(botResponse);
+                
+                const messageResult = ui.addMessage(elements, finalBotResponse, 'bot', true);
+                await ui.typeText(messageResult.element, messageResult.processedText, elements.messagesContainer);
+                
+                chatState.messageHistory.push({
+                    type: 'user',
+                    content: messageText
+                }, {
+                    type: 'bot',
+                    content: finalBotResponse
+                });
+                
+            } catch (error) {
+                console.error('Message submission error:', error);
+                typingIndicator.remove();
+                ui.showError(elements, "Sorry, I couldn't send your message. Please try again.");
+            } finally {
+                chatState.isWaiting = false;
+                elements.sendButton.disabled = false;
+                elements.messageTextarea.focus();
+            }
+        }
+    };
+
+    // Initialize the widget
+    const init = () => {
+        loadResources();
+        
+        // Prevent zoom gestures specifically on iOS devices
+        const preventZoomIOS = () => {
+            // Detect iOS devices
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            
+            if (!isIOS) return; // Exit if not iOS device
+            
+            console.log('iOS device detected, applying zoom prevention');
+            
+            // Prevent pinch zoom on iOS only
+            document.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchend', (e) => {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent double tap zoom on iOS only
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    e.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, { passive: false });
+
+            // Prevent zoom with wheel/trackpad on iOS only
+            document.addEventListener('wheel', (e) => {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Prevent keyboard zoom shortcuts on iOS only
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '0')) {
+                    e.preventDefault();
+                }
+            });
+        };
+
+        preventZoomIOS();
+        
+        const elements = createElements();
+        
+        const widgetStyles = document.createElement('style');
+        widgetStyles.textContent = `
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Poppins', sans-serif;
+                background: #f9fafb;
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height */
+                overflow: hidden;
+                /* Basic touch handling for all devices */
+                touch-action: manipulation;
+            }
+
+            /* iOS-specific zoom prevention */
+            @supports (-webkit-touch-callout: none) {
+                body {
+                    -webkit-user-select: none;
+                    user-select: none;
+                    -webkit-touch-callout: none;
+                    -webkit-text-size-adjust: 100%;
+                    -webkit-transform: translateZ(0);
+                    transform: translateZ(0);
+                    -webkit-backface-visibility: hidden;
+                    backface-visibility: hidden;
+                    -webkit-overflow-scrolling: touch;
+                }
+            }
+
+            /* Additional iOS zoom prevention */
+            @supports (-webkit-touch-callout: none) {
+                html {
+                    touch-action: manipulation;
+                    -webkit-text-size-adjust: 100%;
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    user-select: none;
+                }
+
+                * {
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    -webkit-tap-highlight-color: transparent;
+                }
+
+                /* Allow text selection only in input fields on iOS */
+                input, textarea {
+                    -webkit-user-select: auto;
+                    user-select: auto;
+                    -webkit-touch-callout: default;
+                }
+            }
+
+            /* Non-iOS devices keep normal behavior */
+            @supports not (-webkit-touch-callout: none) {
+                * {
+                    /* Normal touch behavior for Samsung/Android */
+                }
+            }
+
+            .chat-assist-widget {
+                --chat-color-primary: var(--chat-widget-primary, #3b82f6);
+                --chat-color-secondary: var(--chat-widget-secondary, #2563eb);
+                --chat-color-tertiary: var(--chat-widget-tertiary, #1d4ed8);
+                --chat-color-light: var(--chat-widget-light, #dbeafe);
+                --chat-color-surface: var(--chat-widget-surface, #ffffff);
+                --chat-color-text: var(--chat-widget-text, #1f2937);
+                --chat-color-text-light: var(--chat-widget-text-light, #6b7280);
+                --chat-color-border: var(--chat-widget-border, #e5e7eb);
+                --chat-shadow-sm: 0 1px 3px rgba(59, 130, 246, 0.1);
+                --chat-shadow-md: 0 4px 6px rgba(59, 130, 246, 0.15);
+                --chat-shadow-lg: 0 10px 15px rgba(59, 130, 246, 0.2);
+                --chat-radius-sm: 8px;
+                --chat-radius-md: 12px;
+                --chat-radius-lg: 20px;
+                --chat-radius-full: 9999px;
+                --chat-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                font-family: 'Poppins', sans-serif;
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height */
+                width: 100vw;
+                /* Prevent zoom on mobile */
+                touch-action: manipulation;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+
+            .chat-assist-widget .chat-window {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height for better mobile support */
+                background: #f9fafb;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                opacity: 1;
+                transform: translateY(0);
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            .chat-assist-widget .chat-window-inner {
+                width: 100%;
+                height: 100%;
+                background: var(--chat-color-surface);
+                border-radius: 0;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                box-shadow: none;
+                padding: 0;
+                box-sizing: border-box;
+                /* Ensure content fits within safe areas */
+                padding-top: env(safe-area-inset-top, 0);
+                padding-bottom: env(safe-area-inset-bottom, 0);
+                padding-left: env(safe-area-inset-left, 0);
+                padding-right: env(safe-area-inset-right, 0);
+            }
+
+            .chat-assist-widget .chat-header {
+                padding: 20px 24px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+                position: relative;
+                font-weight: 600;
+                font-size: 18px;
+                flex-shrink: 0;
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(37, 99, 235, 0.3);
+            }
+
+            .chat-assist-widget .chat-header-logo-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                position: relative;
+            }
+
+            .chat-assist-widget .clear-chat-btn {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 50%;
+                transition: var(--chat-transition);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                flex-shrink: 0;
+            }
+
+            .chat-assist-widget .clear-chat-btn.visible {
+                display: flex;
+            }
+
+            .chat-assist-widget .clear-chat-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: scale(1.05);
+            }
+
+            .chat-assist-widget .clear-chat-btn img {
+                width: 28px;
+                height: 28px;
+                object-fit: contain;
+            }
+
+            .chat-assist-widget .chat-header-logo {
+                height: 36px;
+                object-fit: contain;
+                background: transparent;
+            }
+
+            .chat-assist-widget .chat-header-face {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid white;
+                position: relative;
+            }
+
+            .chat-assist-widget .online-indicator {
+                position: absolute;
+                bottom: 6px;
+                right: 6px;
+                width: 8px;
+                height: 8px;
+                background: #10b981;
+                border: 1px solid white;
+                border-radius: 50%;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+                50% {
+                    transform: scale(1.1);
+                    opacity: 0.8;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .chat-assist-widget .chat-welcome {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 40px 30px;
+                text-align: center;
+                width: calc(100% - 60px);
+                max-width: 400px;
+            }
+
+            .chat-assist-widget .chat-welcome-title {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--chat-color-text);
+                margin-bottom: 32px;
+                line-height: 1.4;
+                white-space: pre-line;
+                text-align: center;
+            }
+
+            .chat-assist-widget .chat-start-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                width: 100%;
+                padding: 16px 20px;
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+                border: none;
+                border-radius: var(--chat-radius-md);
+                cursor: pointer;
+                font-size: 15px;
+                transition: var(--chat-transition);
+                font-weight: 600;
+                font-family: inherit;
+                margin-bottom: 20px;
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(37, 99, 235, 0.3);
+                min-height: 52px;
+            }
+
+            .chat-assist-widget .chat-start-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 40px rgba(59, 130, 246, 0.5), 0 6px 20px rgba(37, 99, 235, 0.4);
+            }
+
+            .chat-assist-widget .chat-start-btn:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+            }
+
+            .chat-assist-widget .chat-response-time {
+                font-size: 13px;
+                color: var(--chat-color-text-light);
+                margin: 0;
+                text-align: center;
+                white-space: pre-line;
+            }
+
+            .chat-assist-widget .chat-body {
+                display: none;
+                flex-direction: column;
+                flex: 1;
+                min-height: 0;
+            }
+
+            .chat-assist-widget .chat-body.active {
+                display: flex;
+            }
+
+            /* Contact Info Styles */
+            .chat-assist-widget .contact-info-container {
+                background: #f8fafc;
+                border: 1px solid var(--chat-color-light);
+                border-radius: var(--chat-radius-md);
+                margin: 16px 4px;
+                overflow: hidden;
+                align-self: flex-start;
+                max-width: 90%;
+            }
+
+            .chat-assist-widget .contact-info-header {
+                padding: 16px 20px 12px 20px;
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+            }
+
+            .chat-assist-widget .contact-info-header h3 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .chat-assist-widget .contact-info-content {
+                padding: 16px 20px;
+            }
+
+            .chat-assist-widget .contact-info-content p {
+                margin: 0 0 12px 0;
+                font-size: 14px;
+                line-height: 1.5;
+                color: var(--chat-color-text);
+            }
+
+            .chat-assist-widget .contact-info-content p:last-child {
+                margin-bottom: 0;
+            }
+
+            .chat-assist-widget .contact-info-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .chat-assist-widget .contact-info-list li {
+                margin: 0 0 12px 0;
+                font-size: 14px;
+                line-height: 1.5;
+                color: var(--chat-color-text);
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .chat-assist-widget .contact-info-list li:last-child {
+                margin-bottom: 0;
+            }
+
+            .chat-assist-widget .contact-info-list li strong {
+                font-weight: 600;
+                color: var(--chat-color-primary);
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            /* Tally Form Styles */
+            .chat-assist-widget .tally-form-container {
+                display: none;
+                flex-direction: column;
+                flex: 1;
+                min-height: 0;
+                background: var(--chat-color-surface);
+            }
+
+            .chat-assist-widget .tally-form-container.active {
+                display: flex;
+            }
+
+            .chat-assist-widget .tally-form-header {
+                padding: 24px;
+                background: var(--chat-color-surface);
+                border-bottom: 1px solid var(--chat-color-border);
+                position: relative;
+            }
+
+            .chat-assist-widget .tally-form-title {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--chat-color-text);
+                margin: 0 0 8px 0;
+                text-align: center;
+            }
+
+            .chat-assist-widget .tally-form-subtitle {
+                font-size: 14px;
+                color: var(--chat-color-text-light);
+                margin: 0;
+                text-align: center;
+            }
+
+            .chat-assist-widget .tally-form-footer {
+                padding: 16px 24px;
+                background: var(--chat-color-surface);
+                border-top: 1px solid var(--chat-color-border);
+                display: flex;
+                justify-content: center;
+            }
+
+            .chat-assist-widget .return-to-chat-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                padding: 12px 24px;
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+                border: none;
+                border-radius: var(--chat-radius-md);
+                cursor: pointer;
+                font-size: 14px;
+                transition: var(--chat-transition);
+                font-weight: 600;
+                font-family: inherit;
+                box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+                min-height: 44px;
+            }
+
+            .chat-assist-widget .return-to-chat-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            }
+
+            .chat-assist-widget .tally-form-content {
+                flex: 1;
+                padding: 0 24px 24px 24px;
+                overflow-y: auto;
+            }
+
+            .chat-assist-widget .tally-form-content iframe {
+                border-radius: var(--chat-radius-md);
+                box-shadow: var(--chat-shadow-sm);
+            }
+
+            /* ADDED: Inline Tally Form Styles */
+            .chat-assist-widget .inline-tally-container {
+                background: #f8fafc;
+                border: 1px solid var(--chat-color-light);
+                border-radius: var(--chat-radius-md);
+                margin: 16px 4px;
+                overflow: hidden;
+                align-self: flex-start;
+                max-width: 95%;
+                width: 100%;
+            }
+
+            .chat-assist-widget .inline-tally-header {
+                padding: 16px 20px 12px 20px;
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+            }
+
+            .chat-assist-widget .inline-tally-header h3 {
+                margin: 0 0 8px 0;
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .chat-assist-widget .inline-tally-header p {
+                margin: 0;
+                font-size: 14px;
+                opacity: 0.9;
+            }
+
+            .chat-assist-widget .inline-tally-content {
+                padding: 16px 20px;
+                background: white;
+            }
+
+            .chat-assist-widget .inline-tally-content iframe {
+                border-radius: var(--chat-radius-sm);
+                box-shadow: var(--chat-shadow-sm);
+                width: 100%;
+                border: none;
+            }
+
+            .chat-assist-widget .chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 24px;
+                background: #f9fafb;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .chat-assist-widget .chat-messages::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .chat-assist-widget .chat-messages::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .chat-assist-widget .chat-messages::-webkit-scrollbar-thumb {
+                background-color: rgba(59, 130, 246, 0.3);
+                border-radius: var(--chat-radius-full);
+            }
+
+            .chat-assist-widget .chat-bubble {
+                padding: 16px 20px;
+                max-width: 85%;
+                word-wrap: break-word;
+                font-size: 15px;
+                line-height: 1.5;
+                position: relative;
+                white-space: pre-line;
+                margin: 0 4px 16px 4px;
+            }
+
+            .chat-assist-widget .chat-bubble.user-bubble {
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+                align-self: flex-end;
+                border-radius: 12px 12px 0 12px;
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(37, 99, 235, 0.3);
+            }
+
+            .chat-assist-widget .chat-bubble.bot-bubble {
+                background: white;
+                color: var(--chat-color-text);
+                align-self: flex-start;
+                border-radius: 12px 12px 12px 0;
+                box-shadow: var(--chat-shadow-sm);
+                border: 1px solid var(--chat-color-light);
+            }
+
+            /* Chat link styles */
+            .chat-assist-widget .chat-link {
+                color: var(--chat-color-primary);
+                text-decoration: underline;
+                font-weight: 500;
+                transition: var(--chat-transition);
+            }
+
+            .chat-assist-widget .chat-link:hover {
+                color: var(--chat-color-secondary);
+                text-decoration: none;
+            }
+
+            .chat-assist-widget .chat-link:visited {
+                color: var(--chat-color-tertiary);
+            }
+
+            .chat-assist-widget .typing-indicator {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                padding: 14px 18px;
+                background: white;
+                border-radius: 0 12px 12px 12px;
+                max-width: 80px;
+                align-self: flex-start;
+                box-shadow: var(--chat-shadow-sm);
+                border: 1px solid var(--chat-color-light);
+                margin-bottom: 20px;
+            }
+
+            .chat-assist-widget .typing-dot {
+                width: 8px;
+                height: 8px;
+                background: var(--chat-color-primary);
+                border-radius: var(--chat-radius-full);
+                opacity: 0.7;
+                animation: typingAnimation 1.4s infinite ease-in-out;
+            }
+
+            .chat-assist-widget .typing-dot:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .chat-assist-widget .typing-dot:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .chat-assist-widget .typing-dot:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+
+            @keyframes typingAnimation {
+                0%, 60%, 100% {
+                    transform: translateY(0);
+                }
+                30% {
+                    transform: translateY(-4px);
+                }
+            }
+
+            .chat-assist-widget .chat-controls {
+                padding: 20px 24px 12px 24px;
+                background: var(--chat-color-surface);
+                border-top: 1px solid var(--chat-color-light);
+                display: flex;
+                gap: 12px;
+                flex-shrink: 0;
+                position: relative;
+                z-index: 10;
+            }
+
+            .chat-assist-widget .ai-disclaimer {
+                padding: 0 24px 8px 24px;
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
+                background: var(--chat-color-surface);
+                font-size: 11px;
+                color: var(--chat-color-text-light);
+                text-align: center;
+                line-height: 1.3;
+                opacity: 0.8;
+                flex-shrink: 0;
+                border-top: 1px solid rgba(229, 231, 235, 0.5);
+            }
+
+            .chat-assist-widget .chat-textarea {
+                flex: 1;
+                padding: 14px 16px;
+                border: 1px solid var(--chat-color-light);
+                border-radius: var(--chat-radius-md);
+                background: var(--chat-color-surface);
+                color: var(--chat-color-text);
+                resize: none;
+                font-family: inherit;
+                font-size: 16px;
+                height: 48px;
+                line-height: 1.5;
+                transition: var(--chat-transition);
+                box-sizing: border-box;
+                overflow-y: hidden;
+                -webkit-appearance: none;
+                transform: translateZ(0);
+                touch-action: manipulation;
+            }
+
+            .chat-assist-widget .chat-textarea:focus {
+                outline: none;
+                border-color: var(--chat-color-primary);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            }
+
+            .chat-assist-widget .chat-textarea::placeholder {
+                color: var(--chat-color-text-light);
+            }
+
+            .chat-assist-widget .chat-submit {
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+                border: none;
+                border-radius: var(--chat-radius-md);
+                width: 48px;
+                height: 48px;
+                cursor: pointer;
+                transition: var(--chat-transition);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(37, 99, 235, 0.3);
+            }
+
+            .chat-assist-widget .chat-submit:hover {
+                transform: scale(1.08);
+                box-shadow: 0 12px 40px rgba(59, 130, 246, 0.5), 0 6px 20px rgba(37, 99, 235, 0.4);
+            }
+
+            .chat-assist-widget .chat-submit svg {
+                width: 22px;
+                height: 22px;
+            }
+
+            .chat-assist-widget .chat-submit:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            .chat-assist-widget .suggested-questions {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin: 12px 0;
+                align-self: flex-start;
+                max-width: 85%;
+            }
+
+            .chat-assist-widget .suggested-question-btn {
+                background: #f3f4f6;
+                border: 1px solid var(--chat-color-light);
+                border-radius: var(--chat-radius-md);
+                padding: 10px 14px;
+                text-align: left;
+                font-size: 13px;
+                color: var(--chat-color-text);
+                cursor: pointer;
+                transition: var(--chat-transition);
+                font-family: inherit;
+                line-height: 1.4;
+            }
+
+            .chat-assist-widget .suggested-question-btn:hover {
+                background: var(--chat-color-light);
+                border-color: var(--chat-color-primary);
+            }
+
+            .chat-assist-widget .user-registration {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 40px 30px;
+                text-align: center;
+                width: calc(100% - 60px);
+                max-width: 400px;
+                display: none;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .chat-assist-widget .user-registration.active {
+                display: flex;
+            }
+
+            .chat-assist-widget .registration-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--chat-color-text);
+                margin-bottom: 24px;
+                line-height: 1.3;
+                text-align: center;
+            }
+
+            .chat-assist-widget .registration-form {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .chat-assist-widget .form-field {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                text-align: left;
+            }
+
+            .chat-assist-widget .form-label {
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--chat-color-text);
+            }
+
+            .chat-assist-widget .form-input {
+                padding: 16px 18px;
+                border: 1px solid var(--chat-color-border);
+                border-radius: var(--chat-radius-md);
+                font-family: inherit;
+                font-size: 16px;
+                min-height: 52px;
+                box-sizing: border-box;
+                transition: var(--chat-transition);
+                -webkit-appearance: none;
+                transform: translateZ(0);
+                touch-action: manipulation;
+            }
+
+            .chat-assist-widget .form-input:focus {
+                outline: none;
+                border-color: var(--chat-color-primary);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            }
+
+            .chat-assist-widget .form-input.error {
+                border-color: #ef4444;
+            }
+
+            .chat-assist-widget .error-text {
+                font-size: 12px;
+                color: #ef4444;
+                margin-top: 2px;
+            }
+
+            .chat-assist-widget .submit-registration {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                padding: 18px 24px;
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 50%, #2563eb 100%);
+                color: white;
+                border: none;
+                border-radius: var(--chat-radius-md);
+                cursor: pointer;
+                font-size: 16px;
+                transition: var(--chat-transition);
+                font-weight: 600;
+                font-family: inherit;
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4), 0 4px 16px rgba(37, 99, 235, 0.3);
+                min-height: 56px;
+            }
+
+            .chat-assist-widget .submit-registration:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 40px rgba(59, 130, 246, 0.5), 0 6px 20px rgba(37, 99, 235, 0.4);
+            }
+
+            .chat-assist-widget .submit-registration:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
+                transform: none;
+            }
+        `;
+        document.head.appendChild(widgetStyles);
+        
+        // Add Tally form script loading functionality
+        const loadTallyScript = () => {
+            const script = document.createElement('script');
+            script.innerHTML = `
+                var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}
+            `;
+            document.body.appendChild(script);
+        };
+        
+        loadTallyScript();
+        
+        elements.startChatButton.addEventListener('click', () => ui.showRegistrationForm(elements));
+        elements.registrationForm.addEventListener('submit', (e) => chat.handleRegistration(e, elements));
+        
+        // Add Tally form return to chat button event listener
+        elements.returnToChatBtn.addEventListener('click', () => ui.hideTallyForm(elements));
+        
+        // Add clear chat button event listener
+        elements.clearChatBtn.addEventListener('click', () => ui.clearChat(elements));
+        
+        elements.sendButton.addEventListener('click', () => {
+            const msg = elements.messageTextarea.value.trim();
+            if (msg && !chatState.isWaiting) {
+                chat.submitMessage(elements, msg);
+                elements.messageTextarea.value = '';
+            }
+        });
+        
+        elements.messageTextarea.addEventListener('keypress', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const msg = elements.messageTextarea.value.trim();
+                if (msg && !chatState.isWaiting) {
+                    chat.submitMessage(elements, msg);
+                    elements.messageTextarea.value = '';
+                }
+            }
+        });
+        
+        // Enhanced mobile keyboard handling
+        elements.messageTextarea.addEventListener('focus', () => {
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                elements.messageTextarea.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 300);
+        });
+        
+        elements.messageTextarea.addEventListener('blur', () => {
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Handle input events for auto-resize (limited)
+        elements.messageTextarea.addEventListener('input', function() {
+            this.style.height = '48px';
+        });
+        
+        // Enhanced mobile input handling for registration form
+        elements.nameInput.addEventListener('focus', () => {
+            setTimeout(() => {
+                elements.nameInput.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 300);
+        });
+        
+        elements.emailInput.addEventListener('focus', () => {
+            setTimeout(() => {
+                elements.emailInput.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 300);
+        });
+        
+        const handleImageError = (img) => {
+            img.style.display = 'none';
+            img.onerror = null; 
+        };
+        
+        const headerLogoImg = elements.chatWindow.querySelector('.chat-header-logo');
+        if (headerLogoImg) headerLogoImg.onerror = () => handleImageError(headerLogoImg);
+        
+        const headerFaceImg = elements.chatWindow.querySelector('.chat-header-face');
+        if (headerFaceImg) headerFaceImg.onerror = () => handleImageError(headerFaceImg);
+    };
+
+    init();
+})();
+    </script>
+</body>
+</html>

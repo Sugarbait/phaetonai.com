@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://phaetonai.com/</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <mobile:mobile />
+    <image:image>
+      <image:loc>https://phaetonai.ca/clients/phaetonai/images/phaetonimage.jpg</image:loc>
+      <image:caption>Phaeton AI team developing enterprise AI chatbot solutions and voice assistant technology for business automation</image:caption>
+      <image:title>Phaeton AI Enterprise Solutions</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://phaetonai.ca/clients/phaetonai/images/phaetonimage2.jpg</image:loc>
+      <image:caption>Professional AI development team at Phaeton AI creating custom chatbot and voice assistant solutions for enterprise automation and digital transformation</image:caption>
+      <image:title>AI Development Team</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Blog Main Page -->
+  <url>
+    <loc>https://phaetonai.com/blog</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- Contact Page -->
+  <url>
+    <loc>https://phaetonai.com/contact</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- Support Page -->
+  <url>
+    <loc>https://phaetonai.com/support</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- FAQ Page -->
+  <url>
+    <loc>https://phaetonai.com/faq</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://phaetonai.com/privacy</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://phaetonai.com/terms</loc>
+    <lastmod>2025-08-22T12:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- Service Pages -->
+  <url>
+    <loc>https://phaetonai.com/#features</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <mobile:mobile />
+  </url>
+  
+  <url>
+    <loc>https://phaetonai.com/#how-it-works</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <mobile:mobile />
+  </url>
+  
+  <url>
+    <loc>https://phaetonai.com/#about</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <mobile:mobile />
+  </url>
+  
+  <url>
+    <loc>https://phaetonai.com/#pricing</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile />
+  </url>
+  
+  <!-- Sample Blog Posts - Replace with actual blog post URLs from database -->
+  <!-- Note: In production, this should be dynamically generated from the blog_posts table -->
+  <url>
+    <loc>https://phaetonai.com/blog/getting-started-with-ai-chatbots</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile />
+  </url>
+  
+  <url>
+    <loc>https://phaetonai.com/blog/implementing-voice-assistants-business</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile />
+  </url>
+  
+  <url>
+    <loc>https://phaetonai.com/blog/ai-automation-enterprise-solutions</loc>
+    <lastmod>2025-08-18T12:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile />
+  </url>
+
+</urlset>

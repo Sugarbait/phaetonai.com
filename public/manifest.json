@@ -1,0 +1,36 @@
+{
+  "name": "Phaeton AI - AI-Powered Business Solutions",
+  "short_name": "Phaeton AI",
+  "description": "Leading Canadian AI consulting company specializing in enterprise chatbot development, voice assistants, business automation, and PIPEDA compliant AI solutions for digital transformation success.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "https://phaetonai.ca/clients/phaetonai/images/Phaetoai-Icon-Large.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://phaetonai.ca/clients/phaetonai/images/Phaetoai-Icon-Large.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "technology", "artificial-intelligence", "automation"],
+  "screenshots": [
+    {
+      "src": "https://phaetonai.ca/clients/phaetonai/images/phaetonimage.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide"
+    }
+  ]
+}

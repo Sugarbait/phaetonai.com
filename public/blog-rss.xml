@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Phaeton AI Blog - Artificial Intelligence Insights and Solutions</title>
+    <link>https://phaetonai.com/blog</link>
+    <description>Stay updated with the latest insights on artificial intelligence, machine learning, chatbots, voice assistants, and business automation from Phaeton AI's expert team.</description>
+    <language>en-us</language>
+    <managingEditor>contactus@phaetonai.com (Phaeton AI Team)</managingEditor>
+    <webMaster>contactus@phaetonai.com (Phaeton AI Team)</webMaster>
+    <lastBuildDate>Sun, 18 Aug 2025 12:00:00 GMT</lastBuildDate>
+    <pubDate>Sun, 18 Aug 2025 12:00:00 GMT</pubDate>
+    <ttl>60</ttl>
+    <image>
+      <url>https://phaetonai.ca/clients/phaetonai/images/Phaeton-Logo.png</url>
+      <title>Phaeton AI Blog</title>
+      <link>https://phaetonai.com/blog</link>
+      <width>300</width>
+      <height>100</height>
+    </image>
+    <atom:link href="https://phaetonai.com/blog-rss.xml" rel="self" type="application/rss+xml" />
+    <category>Technology</category>
+    <category>Artificial Intelligence</category>
+    <category>Machine Learning</category>
+    <category>Business Automation</category>
+    <category>Chatbots</category>
+    <category>Voice Assistants</category>
+    
+    <!-- Sample RSS items for SEO indexing - In production, replace with dynamic generation from blog_posts table -->
+    <item>
+      <title>Getting Started with AI Chatbots for Enterprise</title>
+      <description><![CDATA[Learn how to implement AI chatbots in your enterprise environment with best practices, security considerations, and ROI optimization strategies from Phaeton AI experts.]]></description>
+      <link>https://phaetonai.com/blog/getting-started-with-ai-chatbots</link>
+      <guid isPermaLink="true">https://phaetonai.com/blog/getting-started-with-ai-chatbots</guid>
+      <pubDate>Sun, 18 Aug 2025 10:00:00 GMT</pubDate>
+      <author>contactus@phaetonai.com (Phaeton AI Team)</author>
+      <category>AI Chatbots</category>
+      <category>Enterprise Solutions</category>
+    </item>
+    
+    <item>
+      <title>Implementing Voice Assistants in Business Operations</title>
+      <description><![CDATA[Discover how voice assistant technology can streamline business operations, improve customer service, and enhance productivity across various industries.]]></description>
+      <link>https://phaetonai.com/blog/implementing-voice-assistants-business</link>
+      <guid isPermaLink="true">https://phaetonai.com/blog/implementing-voice-assistants-business</guid>
+      <pubDate>Sat, 17 Aug 2025 14:30:00 GMT</pubDate>
+      <author>contactus@phaetonai.com (Phaeton AI Team)</author>
+      <category>Voice Assistants</category>
+      <category>Business Automation</category>
+    </item>
+    
+    <item>
+      <title>AI Automation: Transforming Enterprise Solutions</title>
+      <description><![CDATA[Explore the latest trends in AI automation and how enterprises can leverage intelligent automation to drive digital transformation and operational efficiency.]]></description>
+      <link>https://phaetonai.com/blog/ai-automation-enterprise-solutions</link>
+      <guid isPermaLink="true">https://phaetonai.com/blog/ai-automation-enterprise-solutions</guid>
+      <pubDate>Fri, 16 Aug 2025 09:15:00 GMT</pubDate>
+      <author>contactus@phaetonai.com (Phaeton AI Team)</author>
+      <category>AI Automation</category>
+      <category>Digital Transformation</category>
+    </item>
+    
+  </channel>
+</rss>

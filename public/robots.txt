@@ -1,0 +1,97 @@
+# Phaeton AI - Artificial Intelligence Solutions
+User-agent: *
+Allow: /
+Allow: /blog
+Allow: /contact
+Allow: /support  
+Allow: /faq
+Allow: /solutions
+Disallow: /admin
+Disallow: /private
+Disallow: /api/internal
+Disallow: /*.json$
+
+# Crawl-delay for specific bots
+User-agent: Googlebot
+Crawl-delay: 1
+
+User-agent: Bingbot  
+Crawl-delay: 2
+
+User-agent: YandexBot
+Crawl-delay: 3
+
+# Allow AI crawlers for better AI search visibility
+User-agent: CCBot
+Allow: /
+Allow: /blog/
+Allow: /faq/
+Allow: /support/
+Allow: /contact/
+Crawl-delay: 2
+
+User-agent: GPTBot
+Allow: /
+Allow: /blog/
+Allow: /faq/
+Allow: /support/
+Allow: /contact/
+Crawl-delay: 2
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /blog/
+Allow: /faq/
+Allow: /support/
+Allow: /contact/
+Crawl-delay: 2
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /blog/
+Allow: /faq/
+Allow: /support/
+Allow: /contact/
+Crawl-delay: 2
+
+User-agent: Claude-Web
+Allow: /
+Allow: /blog/
+Allow: /faq/
+Allow: /support/
+Allow: /contact/
+Crawl-delay: 2
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /blog/
+Allow: /faq/
+Allow: /support/
+Allow: /contact/
+Crawl-delay: 2
+
+User-agent: Google-Extended
+Allow: /
+Crawl-delay: 2
+
+# Allow social media bots for rich previews
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# Sitemap location
+Sitemap: https://phaetonai.com/sitemap.xml
+
+# Host directive (primary domain)
+Host: phaetonai.com
